@@ -5,18 +5,29 @@ require './ipconfig.rb'
 hostname = HOSTNAME
 port = PORT
 
+count = 0
+played = 0
 s = TCPSocket.open(hostname, port)
 while line = s.gets
   # Read lines from the socket
-  puts line.chop
+  print line
 
   # send choice to start game
-  (line.chop.eql? '3.Exit') && s.send("1\r\n", 0)
+  # played not equal 0 means we have played once
+  (line.chop.eql? '3.Exit') && (played == 0) && s.send("1\r\n", 0)
   # send speed setting
   (line.chop.eql? 'Choose the speed level(1-9):') && s.send("9\r\n", 0)
 
+  if count >= 32 # more than 3000 up
+    played = 1 # just played once
+    next
+  end
   # get the word!
   lines = line.chop.split('|')
-  (lines.size.eql? 4) && s.send(lines[2] + "\r\n", 0)
+  if lines.size.eql? 4
+    s.send(lines[2] + "\r\n", 0)
+    count += 1
+  end
+
 end
 s.close
