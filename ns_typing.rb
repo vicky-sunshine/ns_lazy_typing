@@ -18,10 +18,12 @@ while line = s.gets
   # send speed setting
   (line.chop.eql? 'Choose the speed level(1-9):') && s.send("9\r\n", 0)
 
-  if count >= 32 # more than 3000 up
+  # more than 3000 up
+  if count >= 32
     played = 1 # just played once
     next
   end
+
   # get the word!
   lines = line.chop.split('|')
   if lines.size.eql? 4
